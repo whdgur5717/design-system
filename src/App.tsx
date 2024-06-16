@@ -1,14 +1,15 @@
-import { css } from "@emotion/react"
-
+import "../styled-system/styles.css"
+import { GlobalSVGProvider } from "./sprite"
 function App() {
   return (
-    <div
-      css={css`
-        color: red;
-      `}
-    >
-      이거임?
-    </div>
+    <>
+      <GlobalSVGProvider />
+      <div>
+        <svg width="16" height="16">
+          <use href={`#kakao`} />
+        </svg>
+      </div>
+    </>
   )
 }
 

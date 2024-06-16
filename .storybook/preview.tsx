@@ -1,8 +1,5 @@
-import { Global, ThemeProvider } from "@emotion/react"
+import "../src/index.css"
 import type { Preview } from "@storybook/react"
-import { theme } from "../src/theme/theme"
-import React from "react"
-import { globalStyle } from "../src/theme/globalStyle"
 
 const preview: Preview = {
   parameters: {
@@ -13,14 +10,6 @@ const preview: Preview = {
       },
     },
   },
-  decorators: [
-    (Story) => (
-      <ThemeProvider theme={theme}>
-        <Global styles={globalStyle} />
-        <Story />
-      </ThemeProvider>
-    ),
-  ],
 }
 
 export default preview
