@@ -1,4 +1,4 @@
-import { cva, type RecipeVariantProps } from "../../../styled-system/css/index"
+import { cva, RecipeVariantProps } from "../../../styled-system/css/index"
 import { styled } from "../../../styled-system/jsx/index"
 
 export const buttonCva = cva({
