@@ -12,7 +12,7 @@ export default defineConfig({
   minify: true,
   hash: true,
   clean: true,
-  outExtension: "mjs",
+  outExtension: "js",
   jsxFramework: "react",
   include: [
     "./src/**/*.{js,jsx,ts,tsx}",
