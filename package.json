@@ -12,7 +12,8 @@
     "build-storybook": "storybook build",
     "prepack": "panda codegen",
     "panda": "npx panda",
-    "panda:dev": "npx panda --watch"
+    "panda:dev": "npx panda --watch",
+    "chromatic": "npx chromatic --project-token=chpt_5273f98767529e2"
   },
   "dependencies": {
     "@emotion/react": "^11.11.4",
@@ -20,7 +21,9 @@
     "@storybook/preview-api": "^8.1.5",
     "@types/prop-types": "^15.7.12",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "style-dictionary": "^3.9.2",
+    "token-transformer": "^0.0.33"
   },
   "devDependencies": {
     "@chromatic-com/storybook": "^1.5.0",
@@ -40,10 +43,13 @@
     "@typescript-eslint/eslint-plugin": "^7.2.0",
     "@typescript-eslint/parser": "^7.2.0",
     "@vitejs/plugin-react-swc": "^3.5.0",
+    "chromatic": "^11.5.4",
     "eslint": "^8.57.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.6",
     "eslint-plugin-storybook": "^0.8.0",
+    "react-docgen-typescript": "^2.2.2",
+    "react-docgen-typescript-plugin": "^1.0.8",
     "storybook": "^8.1.5",
     "typescript": "^5.2.2",
     "vite": "^5.2.0",

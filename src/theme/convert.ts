@@ -1,9 +1,14 @@
-type ObjValue<T> = { value: T }
-type Obj<T> = Record<string, ObjValue<T>>
+type ObjValue = {
+  value: string | number
+  type?: string
+  description?: string
+}
 
-export const transformObject = <T>(input: Record<string, T>): Obj<T> => {
-  return Object.entries(input).reduce<Obj<T>>((acc, [key, value]) => {
-    acc[key] = { value }
+type Obj = Record<string, { value: string }>
+
+export const transformObject = (input: Record<string, ObjValue>): Obj => {
+  return Object.entries(input).reduce<Obj>((acc, [key, value]) => {
+    acc[key] = { value: value.value.toString() }
     return acc
   }, {})
 }

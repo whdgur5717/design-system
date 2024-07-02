@@ -1,19 +1,20 @@
 import { defineConfig, defineTextStyles } from "@pandacss/dev"
 import { transformObject } from "./src/theme/convert"
-import { fontSize, fontWeight, colors } from "./src/theme"
-import { radius } from "./src/theme/radius"
-
+import {
+  basicColorToken,
+  semanticColorToken,
+  borderRadius,
+  typography,
+  fontSize,
+} from "./src/theme/tokens/index"
 export default defineConfig({
-  // Whether to use css reset
   preflight: true,
   jsxFramework: "react",
-  // Where to look for your css declarations
   include: [
     "./src/**/*.{js,jsx,ts,tsx}",
     "./pages/**/*.{js,jsx,ts,tsx}",
     "./stories/**/*.{js,jsx,ts,tsx}",
   ],
-  // Files to exclude
   conditions: {
     light: "[data-color-mode=light] &",
     dark: "[data-color-mode=dark] &",
@@ -46,17 +47,37 @@ export default defineConfig({
     minHeight: {
       values: { type: "string" },
     },
+    borderRadius: {
+      values: "radii",
+    },
   },
   strictTokens: true,
   strictPropertyValues: true,
   theme: {
+    extend: {
+      textStyles: typography,
+      keyframes: {
+        fadein: {
+          "0%": { opacity: "0" },
+          "100%": { opacity: "1" },
+        },
+      },
+    },
     tokens: {
+      radii: transformObject(borderRadius),
       fontSizes: transformObject(fontSize),
-      fontWeights: transformObject(fontWeight),
-      radii: transformObject(radius),
     },
     semanticTokens: {
-      colors,
+      colors: {
+        ...basicColorToken,
+        ...semanticColorToken,
+        white: {
+          value: {
+            base: "#FFFFFF",
+            _dark: "#FFFFFF",
+          },
+        },
+      },
     },
   },
   // The output directory for your css system

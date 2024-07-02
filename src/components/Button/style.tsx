@@ -5,7 +5,7 @@ export const buttonCva = cva({
   base: {
     textAlign: "center",
     lineHeight: "20",
-    borderRadius: "md",
+    borderRadius: "rounded",
     cursor: "pointer",
     display: "inline-flex",
     flexDirection: "row",
@@ -21,6 +21,7 @@ export const buttonCva = cva({
     _disabled: {
       cursor: "not-allowed",
       opacity: 0.5,
+      backgroundColor: "grey_400",
     },
     color: "text_primary",
   },
@@ -28,7 +29,7 @@ export const buttonCva = cva({
     size: {
       small: {
         height: "44",
-        fontSize: "md",
+        fontSize: "sm",
         paddingLeft: "8",
         paddingRight: "8",
       },
@@ -40,14 +41,14 @@ export const buttonCva = cva({
       },
       large: {
         height: "48",
-        fontSize: "xl",
+        fontSize: "lg",
         paddingLeft: "16",
         paddingRight: "16",
       },
     },
     br: {
       normal: {
-        borderRadius: "md",
+        borderRadius: "sm",
       },
       rounded: {
         borderRadius: "rounded",
@@ -61,7 +62,6 @@ export const buttonCva = cva({
       text: {
         border: "1px solid",
         borderColor: "border_basic",
-        backgroundColor: "white",
       },
     },
   },
@@ -71,6 +71,6 @@ export const buttonCva = cva({
     br: "normal",
   },
 })
-export type ButtonVariants = RecipeVariantProps<typeof buttonCva>
+export type ButtonStyleVariants = RecipeVariantProps<typeof buttonCva>
 const StyledButton = styled("button", buttonCva)
 export default StyledButton
