@@ -9,6 +9,9 @@ import {
 } from "./src/theme/tokens/index"
 export default defineConfig({
   preflight: true,
+  minify: true,
+  hash: true,
+  clean: true,
   jsxFramework: "react",
   include: [
     "./src/**/*.{js,jsx,ts,tsx}",
@@ -20,6 +23,7 @@ export default defineConfig({
     dark: "[data-color-mode=dark] &",
   },
   presets: ["@pandacss/preset-base"],
+  importMap: ["@styled"],
   exclude: [],
   eject: true,
   utilities: {

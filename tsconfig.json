@@ -18,11 +18,11 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "baseUrl": "./",
+
     "paths": {
-      "@/*": ["src/*"]
+      "@styled/*": ["./styled-system/*"]
     }
   },
-  "include": ["src"],
+  "include": ["src", "styled-system"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
