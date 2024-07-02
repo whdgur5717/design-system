@@ -1,6 +1,5 @@
 import { useControlledState } from "src/hooks/useControllableState"
-import { useCalender } from "./hooks/useCalender"
-import { getMonthlyDate, getWeekDays, getWeeklyDate } from "./utils/date"
+import { getMonthlyDate, getWeekDays } from "./utils/date"
 
 interface CalenderProps {
   value?: Date
@@ -8,18 +7,13 @@ interface CalenderProps {
 }
 
 const Calender = ({ value, onChange }: CalenderProps) => {
-  const [selectedDate = new Date(), setSelectedDate] = useControlledState({
+  const [selectedDate = new Date(), _] = useControlledState({
     prop: value,
     onChange,
   })
-  console.log(selectedDate)
   const weekdays = getWeekDays("ko-KR")
   const weeklyDate = getMonthlyDate(selectedDate, 0)
-  const onPrevClick = () => {
-    const copyDate = new Date(selectedDate)
-    copyDate.setMonth(copyDate.getMonth() - 1)
-    setSelectedDate((prev) => copyDate)
-  }
+
   return (
     <table>
       <caption>

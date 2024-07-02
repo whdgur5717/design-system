@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { cloneElement, forwardRef, isValidElement } from "react"
 
-function mergeProps(
+export function mergeProps(
   slotProps: Record<string, any>,
   childProps: Record<string, any>,
 ) {

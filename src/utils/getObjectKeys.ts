@@ -18,8 +18,3 @@ export function objectEntries<T extends Record<PropertyKey, unknown>>(
 ): Array<[ObjectKeys<T>, T[ObjectKeys<T>]]> {
   return Object.entries(obj) as Array<[ObjectKeys<T>, T[ObjectKeys<T>]]>
 }
-
-const obj1 = { a: "1", b: 2, c: 3 }
-
-const keys = objectKeys(obj1)
-const values = objectEntries(obj1)
