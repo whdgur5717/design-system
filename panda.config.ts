@@ -8,10 +8,6 @@ import {
   fontSize,
 } from "./src/theme/tokens/index"
 export default defineConfig({
-  preflight: true,
-  minify: true,
-  hash: true,
-  clean: true,
   outExtension: "js",
   jsxFramework: "react",
   include: [
