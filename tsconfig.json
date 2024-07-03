@@ -17,11 +17,7 @@
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true,
-
-    "paths": {
-      "@styled/*": ["./styled-system/*"]
-    }
+    "noFallthroughCasesInSwitch": true
   },
   "include": ["src", "styled-system"],
   "references": [{ "path": "./tsconfig.node.json" }]
