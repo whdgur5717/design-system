@@ -1,5 +1,5 @@
-import { cva, RecipeVariantProps } from "../../../styled-system/css"
-import { styled } from "../../../styled-system/jsx"
+import { cva, RecipeVariantProps } from "@styled/css"
+import { styled } from "@styled/jsx"
 
 export const buttonCva = cva({
   base: {
