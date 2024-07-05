@@ -20,7 +20,6 @@ export default defineConfig({
     dark: "[data-color-mode=dark] &",
   },
   presets: ["@pandacss/preset-base"],
-  importMap: ["@styled"],
   exclude: [],
   eject: true,
   utilities: {
