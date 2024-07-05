@@ -1,4 +1,4 @@
-import "@styled/styles.css"
+import "../styled-system/styles.css"
 import { GlobalSVGProvider } from "./sprite"
 function App() {
   return (
