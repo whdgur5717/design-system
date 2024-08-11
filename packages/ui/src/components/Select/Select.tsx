@@ -55,15 +55,29 @@ export const Select = ({
       selected={selectedValue || null}
       onSelect={setSelectedValue}
     >
-      <button
-        onClick={(e) => {
-          e.preventDefault()
-          setIsOpen(!open)
-        }}
-      >
-        {selectedValue || placeholder}
-      </button>
-      {children}
+      <div className="select" style={{ position: "relative" }}>
+        <button
+          className="select_trigger"
+          ref={(node) => {
+            if (!node?.parentElement) {
+              return
+            }
+            node.parentElement.style.setProperty(
+              "--trigger-width",
+              `${node.offsetWidth}px`,
+            )
+          }}
+          onClick={(e) => {
+            e.preventDefault()
+            setIsOpen(!open)
+          }}
+        >
+          <span className="select_placeholder">
+            {selectedValue || placeholder}
+          </span>
+        </button>
+        {children}
+      </div>
     </SelectContextProvider>
   )
 }
@@ -79,7 +93,15 @@ export const SelectPortal = ({ children }: SelectPortalProps) => {
   }
 
   return (
-    <div style={{ position: "fixed", border: "1px solid black" }}>
+    <div
+      style={{
+        border: "1px solid black",
+        zIndex: 1000,
+        minWidth: "var(--trigger-width)",
+        position: "absolute",
+        backgroundColor: "aliceblue",
+      }}
+    >
       {children}
     </div>
   )
