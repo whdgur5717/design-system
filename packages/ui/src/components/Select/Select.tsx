@@ -1,4 +1,4 @@
-import { forwardRef, type ReactNode } from "react"
+import { type ReactNode } from "react"
 import { createContext } from "../../hooks/createContext"
 import { useControlledState } from "../../hooks/useControllableState"
 import { Slot } from "@radix-ui/react-slot"
@@ -22,6 +22,7 @@ interface SelectProps {
   selected?: string
   onSelect?: (value: string) => void
   defaultValue?: string
+  placeholder?: string
   children: ReactNode
 }
 
@@ -32,6 +33,7 @@ export const Select = ({
   selected,
   onSelect,
   defaultValue,
+  placeholder,
   children,
 }: SelectProps) => {
   const [open = false, setIsOpen] = useControlledState({
@@ -53,36 +55,18 @@ export const Select = ({
       selected={selectedValue || null}
       onSelect={setSelectedValue}
     >
-      <div onClick={() => setIsOpen(!open)}>트리거임</div>
+      <button
+        onClick={(e) => {
+          e.preventDefault()
+          setIsOpen(!open)
+        }}
+      >
+        {selectedValue || placeholder}
+      </button>
       {children}
     </SelectContextProvider>
   )
 }
-
-interface SelectTriggerProps {
-  asChild?: boolean
-  children?: ReactNode
-}
-
-export const SelectTrigger = forwardRef<HTMLButtonElement, SelectTriggerProps>(
-  ({ asChild, children }, ref) => {
-    const Comp = asChild ? Slot : "button"
-
-    const { isOpen, onOpenChange } = useSelectContext(CONTEXT_NAME)
-
-    return (
-      <Comp
-        ref={ref}
-        onClick={(e) => {
-          e.preventDefault()
-          onOpenChange(!isOpen)
-        }}
-      >
-        {children}
-      </Comp>
-    )
-  },
-)
 
 interface SelectPortalProps {
   children: ReactNode
@@ -95,9 +79,7 @@ export const SelectPortal = ({ children }: SelectPortalProps) => {
   }
 
   return (
-    <div
-      style={{ position: "fixed", zIndex: 1000, backgroundColor: "mediumblue" }}
-    >
+    <div style={{ position: "fixed", border: "1px solid black" }}>
       {children}
     </div>
   )
@@ -110,7 +92,16 @@ interface SelectItemProps {
 }
 export const SelectItem = ({ children, value, asChild }: SelectItemProps) => {
   const Comp = asChild ? Slot : "li"
-  const { onSelect } = useSelectContext(CONTEXT_NAME)
+  const { onSelect, onOpenChange } = useSelectContext(CONTEXT_NAME)
 
-  return <Comp onClick={() => onSelect?.(value)}>{children}</Comp>
+  return (
+    <Comp
+      onClick={() => {
+        onSelect?.(value)
+        onOpenChange(false)
+      }}
+    >
+      {children}
+    </Comp>
+  )
 }
