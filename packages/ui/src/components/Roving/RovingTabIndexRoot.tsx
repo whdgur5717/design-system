@@ -1,31 +1,22 @@
-import {
-  ReactNode,
-  useCallback,
-  useRef,
-  useState,
-  type ComponentPropsWithoutRef,
-  type ElementType,
-} from "react"
+import { ReactNode, useCallback, useRef, useState } from "react"
 import { useControlledState } from "../../hooks/useControllableState"
 import { RovingTabIndexProvider } from "./useRovingTabIndex"
-import { composeRefs } from "../../hooks/useComposedRefs"
+import { Slot } from "@radix-ui/react-slot"
 
 export const NODE_SELECTOR = "data-roving-tabindex-node"
 const ROOT_SELECTOR = "data-roving-tabindex-root"
 const NOT_FOCUSABLE_SELECTOR = "data-roving-tabindex-not-focusable"
 const SELECTOR_ACTIVE = `:where([${NODE_SELECTOR}=true]):not(:where([${NOT_FOCUSABLE_SELECTOR}=true] *))`
 
-type RovingTabIndexRootBaseProps<T> = {
+type RovingTabIndexRootBaseProps = {
   children: ReactNode | ReactNode[]
   active?: string
   setActive?: (value: string) => void
-  as?: T
+  asChild?: boolean
   dir?: "horizontal" | "vertical"
 }
 
-type RovingTabIndexRootProps<T extends ElementType> =
-  RovingTabIndexRootBaseProps<T> &
-    Omit<ComponentPropsWithoutRef<T>, keyof RovingTabIndexRootBaseProps<T>>
+type RovingTabIndexRootProps = RovingTabIndexRootBaseProps
 
 function onFocusFirst(candidates: HTMLElement[]) {
   const previousFocus = document.activeElement
@@ -34,16 +25,14 @@ function onFocusFirst(candidates: HTMLElement[]) {
   }
 }
 
-export const RovingTabIndexRoot = <T extends ElementType>({
+export const RovingTabIndexRoot = ({
   children,
   active,
   setActive,
-  as,
-  ref,
+  asChild,
   dir = "horizontal",
   ...props
-}: RovingTabIndexRootProps<T>) => {
-  const Component = as || "div"
+}: RovingTabIndexRootProps) => {
   const [isShiftTabbing, setIsShiftTabbing] = useState(false)
 
   const [value = null, setValue] = useControlledState({
@@ -78,7 +67,7 @@ export const RovingTabIndexRoot = <T extends ElementType>({
       elements={elementsRef}
       dir={dir}
     >
-      <Component
+      <Slot
         {...{ [ROOT_SELECTOR]: true }}
         tabIndex={isShiftTabbing ? -1 : 0}
         onFocus={(e) => {
@@ -90,15 +79,14 @@ export const RovingTabIndexRoot = <T extends ElementType>({
             elementsRef.current.get(value ?? ""),
             ...orderedItems.map((i) => i.element),
           ].filter((element): element is HTMLElement => element != null)
-
           onFocusFirst(candidates)
         }}
         onBlur={() => setIsShiftTabbing(false)}
-        ref={composeRefs(ref, rootRef)}
+        ref={rootRef}
         {...props}
       >
         {children}
-      </Component>
+      </Slot>
     </RovingTabIndexProvider>
   )
 }

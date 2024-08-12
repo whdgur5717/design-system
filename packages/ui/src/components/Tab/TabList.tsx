@@ -31,7 +31,7 @@ const setIndicatorStyle = (target: HTMLElement) => {
 export const TabList = ({ children, className }: TabListProps) => {
   const { selected } = useTabContext("tab")
   return (
-    <RovingTabIndexRoot as="div" active={selected}>
+    <RovingTabIndexRoot active={selected}>
       <div
         role="tablist"
         className={cx(
