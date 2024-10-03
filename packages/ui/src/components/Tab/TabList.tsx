@@ -1,20 +1,11 @@
-import {
-  type ReactNode,
-  type ReactElement,
-  type ComponentPropsWithRef,
-  forwardRef,
-} from "react"
+import { type ReactNode, type ComponentPropsWithRef, forwardRef } from "react"
 import { useTabContext } from "./useTabContext"
 
 import { css, cx } from "jh-generated/css"
-import { RovingTabIndexRoot, useRovingTabIndex } from "./useRovingTabIndex"
-import isHotkey from "is-hotkey"
-import { Slot } from "@radix-ui/react-slot"
+import { RovingTabIndexRoot } from "../Roving/RovingTabIndexRoot"
+
+import { RovingItem } from "../Roving/RovingItem"
 import { composeRefs } from "../../hooks/useComposedRefs"
-import {
-  getNextFocusableId,
-  getPrevFocusableId,
-} from "../../utils/getFocusableId"
 
 interface TabListProps {
   children: ReactNode
@@ -40,7 +31,7 @@ const setIndicatorStyle = (target: HTMLElement) => {
 export const TabList = ({ children, className }: TabListProps) => {
   const { selected } = useTabContext("tab")
   return (
-    <RovingTabIndexRoot as="div" active={selected}>
+    <RovingTabIndexRoot active={selected}>
       <div
         role="tablist"
         className={cx(
@@ -55,34 +46,6 @@ export const TabList = ({ children, className }: TabListProps) => {
 }
 type TabItemProps = ComponentPropsWithRef<"button"> & {
   value: string
-}
-
-export const RovingItem = ({
-  value,
-  children,
-}: {
-  value: string
-  children: ReactElement
-}) => {
-  const { getOrderedItems, getRovingProps } = useRovingTabIndex(value)
-  return (
-    <Slot
-      {...getRovingProps<"button">({
-        onKeyDown: (e) => {
-          const items = getOrderedItems()
-          let nextItem
-          if (isHotkey("right", e)) {
-            nextItem = getNextFocusableId(items, value)
-          } else if (isHotkey("left", e)) {
-            nextItem = getPrevFocusableId(items, value)
-          }
-          nextItem?.element.focus()
-        },
-      })}
-    >
-      {children}
-    </Slot>
-  )
 }
 
 export const TabItem = forwardRef<HTMLButtonElement, TabItemProps>(
