@@ -11,6 +11,9 @@
       "cache": false
     },
     "check-type": {},
+    "docs-v2#check-type": {
+      "dependsOn": ["^build"]
+    },
     "lint": {},
     "test": {
       "dependsOn": ["check-type", "lint"]

@@ -24,11 +24,11 @@ jobs:
       - name: playwright setup
         uses: ./.github/actions/playwright
 
-      - name: Build blog
-        run: pnpm exec turbo run build --filter=docs-v2
-
       - name: run ci
         run: pnpm run ci
+
+      - name: Build blog
+        run: pnpm exec turbo run build --filter=docs-v2
 
       - name: Upload PR preview
         if: github.event.pull_request.head.repo.full_name == github.repository
