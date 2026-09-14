@@ -1,0 +1,29 @@
+name: Blog deploy
+description: Deploy the built blog to Cloudflare Workers
+
+inputs:
+  command:
+    required: true
+    description: Wrangler command
+  api-token:
+    required: true
+    description: Cloudflare API token
+  account-id:
+    required: true
+    description: Cloudflare account ID
+
+outputs:
+  deployment-url:
+    value: ${{ steps.deploy.outputs.deployment-url }}
+
+runs:
+  using: composite
+  steps:
+    - id: deploy
+      uses: cloudflare/wrangler-action@v4
+      with:
+        apiToken: ${{ inputs.api-token }}
+        accountId: ${{ inputs.account-id }}
+        packageManager: pnpm
+        workingDirectory: app/docs-v2
+        command: ${{ inputs.command }}

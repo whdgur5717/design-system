@@ -1,10 +1,15 @@
 name: ci
+permissions:
+  contents: read
+  pull-requests: write
 env:
   TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
   TURBO_TEAM: ${{ vars.TURBO_TEAM }}
 on:
   pull_request:
     types: [opened, synchronize, reopened]
+  push:
+    branches: [dev]
 
 jobs:
   version:
@@ -19,5 +24,40 @@ jobs:
       - name: playwright setup
         uses: ./.github/actions/playwright
 
+      - name: Build blog
+        run: pnpm exec turbo run build --filter=docs-v2
+
       - name: run ci
         run: pnpm run ci
+
+      - name: Upload PR preview
+        if: github.event.pull_request.head.repo.full_name == github.repository
+        id: preview
+        uses: ./.github/actions/blog-deploy
+        with:
+          command: versions upload
+          api-token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          account-id: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+      - name: Comment on PR
+        if: steps.preview.outcome == 'success'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PREVIEW_URL: ${{ steps.preview.outputs.deployment-url }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          body="<!-- blog-preview -->"$'\n'"$PREVIEW_URL"
+          comment_id=$(gh api "repos/$GITHUB_REPOSITORY/issues/$PR_NUMBER/comments" --paginate --jq '.[] | select(.user.login == "github-actions[bot]" and (.body | startswith("<!-- blog-preview -->"))) | .id' | tail -n 1)
+          if [ -n "$comment_id" ]; then
+            gh api --method PATCH "repos/$GITHUB_REPOSITORY/issues/comments/$comment_id" -f body="$body" > /dev/null
+          else
+            gh pr comment "$PR_NUMBER" --body "$body"
+          fi
+
+      - name: Deploy production
+        if: github.event_name == 'push'
+        uses: ./.github/actions/blog-deploy
+        with:
+          command: deploy
+          api-token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          account-id: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
