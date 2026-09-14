@@ -5,12 +5,31 @@ import react from "@vitejs/plugin-react"
 import { defineConfig } from "vite"
 import dts from "vite-plugin-dts"
 
+import { generateStylexTokens } from "./build/stylex/generate"
+
 export default defineConfig({
   publicDir: false,
   resolve: {
     tsconfigPaths: true,
   },
   plugins: [
+    {
+      name: "stylex-tokens",
+      buildStart() {
+        const { declarations, javascript } = generateStylexTokens()
+
+        this.emitFile({
+          type: "asset",
+          fileName: "tokens.stylex.js",
+          source: javascript,
+        })
+        this.emitFile({
+          type: "asset",
+          fileName: "tokens.stylex.d.ts",
+          source: declarations,
+        })
+      },
+    },
     {
       name: "color-themes",
       async buildStart() {

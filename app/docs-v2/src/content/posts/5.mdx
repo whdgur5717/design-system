@@ -1,0 +1,95 @@
+---
+title: "tsc를 tsgo로 바꾸면 얼마나 빨라질까?"
+publishedAt: "2026-02-02T15:09:55.480Z"
+updatedAt: "2026-09-07T06:24:52.059Z"
+tags: ["tsc", "tsgo", "typescript"]
+thumbnail: null
+sourceUrl: "https://velog.io/@jh5717/tsc를-tsgo로-바꾸면-얼마나-빨라질까"
+velogId: "b23a05e3-a275-47a3-aebc-be596af50f08"
+order: 5
+---
+
+나는 github에 올라가기 전에 내 코드가 정상인지를 검사하는걸 매우매우 중요하게 생각한다.
+그래서 husky랑 lint-staged를 활용하는데, 이 과정에서 `tsc` 의 경우 ESLint나 Prettier와 다르게, **스테이징된 파일만 검사하는 것이 어렵다**. 정확히 말하면, 특정 tsconfig를 기준으로 일부 파일만 타입 검사하는 건 안된다(`tsc file1.ts file2.ts` 형태로 특정 파일을 지정하면 `tsconfig.json` 이 완전히 무시됨)
+그래서 한번 커밋하면 체감상 거의 10초는 기다려야 했다. 그리고 GUI 툴 같은걸 사용하면 좀더 오래 걸리는 느낌이다.
+
+---
+
+### TypeScript 7 (tsgo) 주요 변경점
+
+**1. 패키지명과 명령어 변경**
+
+```bash
+# 기존
+npm install typescript
+npx tsc
+
+# 변경
+npm install @typescript/native-preview
+npx tsgo
+```
+
+**2. 약 10배 속도 향상**
+
+Go로 포팅된 네이티브 컴파일러라서, 대규모 프로젝트 기준 타입 체크 속도가 매우 빨라졌다고 한다(10x 라는 제목이 많긴한데.. 잘 모르겠다)
+
+**3. VS Code Extension 별도 설치 필요**
+
+[TypeScript Native Preview](https://marketplace.visualstudio.com/items?itemName=TypeScript.vscode-typescript-next) extension을 설치해야 에디터에서 tsgo를 사용할 수 있다.
+
+**4. 일부 tsconfig 옵션 미지원/제거**
+
+- `baseUrl` 옵션이 **제거됨** (원래 [typescript 6버전](https://github.com/microsoft/TypeScript/issues/62508)부터 제거 예정이었다고 함)
+- 일부 옵션은 아직 완전히 지원되지 않음 (`--build`, `--declaration` emit 등)
+
+- 아직 발견된건 없지만 eslint typescript plugin 같은 패키지와 peer의존성 충돌같은게 생길수도 있지 않을까 싶다
+
+**5. Yarn PnP이 아직 지원되지 않음...**
+
+---
+
+### 정리
+
+| 항목       | 내용                         |
+| ---------- | ---------------------------- |
+| 패키지명   | `@typescript/native-preview` |
+| CLI 명령어 | `tsgo`                       |
+| 속도       | 약 8~10배 향상               |
+| VS Code    | 별도 extension 필요          |
+| `baseUrl`  | 제거됨                       |
+| Yarn PnP   | 미지원                       |
+
+아직 preview 단계라 production에서 바로 쓰기엔 무리가 있지만, lint-staged 같은 로컬 개발 환경에서는 충분히 시도해볼 만하다.
+
+## AI를 통해 비교한 tsgo vs tsc 타입 체크 속도
+
+### 실험 환경
+
+- macOS (Apple Silicon)
+- Node.js v24
+- pnpm + Turborepo 모노레포
+
+### 비교 대상
+
+|        | tsc              | tsgo                                 |
+| ------ | ---------------- | ------------------------------------ |
+| 패키지 | typescript 5.7.3 | @typescript/native-preview 7.0.0-dev |
+
+### 테스트 조건
+
+- React + Next.js 기반 소규모 모노레포 패키지 (패키지 4개)
+- 캐시 비활성화 후 전체 타입 체크
+- `time pnpm turbo run check-type --force` (turbo 대신 직접 `pnpm -r --parallel` 를 사용해도 실행시간은 동일)
+
+### 결과
+
+| 측정 항목         | tsc   | tsgo  | 개선            |
+| ----------------- | ----- | ----- | --------------- |
+| 총 실행 시간      | 9.0초 | 4.0초 | **2.25배 빠름** |
+| Turbo 리포트 시간 | 7.6초 | 2.7초 | **2.8배 빠름**  |
+
+### 결론
+
+동일 코드베이스에서 tsgo가 tsc 대비 **2~3배 빠른** 타입 체크 속도를 보임.
+
+대부분 후기에서도 2~3배 정도를 이야기하던데, 비슷하게 나온 것 같다.

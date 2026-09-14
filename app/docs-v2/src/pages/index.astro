@@ -1,0 +1,47 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro"
+import { source } from "@/lib/source"
+
+const posts = [...source.getPages()].sort(
+  (left, right) => Number(left.slugs[0]) - Number(right.slugs[0]),
+)
+const thumbnailClasses = ["thumbnail-blue", "thumbnail-yellow", "thumbnail-green"]
+const dateFormatter = new Intl.DateTimeFormat("ko-KR", {
+  dateStyle: "medium",
+  timeZone: "Asia/Seoul",
+})
+---
+
+<BaseLayout>
+  <main class="page home-page">
+    <header class="section">
+      <h1 class="name reveal">이종혁</h1>
+    </header>
+
+    <section class="section" aria-label="글 목록">
+      <div class="cards">
+        {
+          posts.map((post, index) => (
+            <a class="card" href={post.url} data-astro-prefetch="viewport">
+              <div
+                class:list={["thumbnail", thumbnailClasses[index % thumbnailClasses.length]]}
+                aria-hidden="true"
+              >
+                <span class="thumbnail-tag">{post.data.tags[0]?.toUpperCase()}</span>
+                <span class="thumbnail-mark">{String(index + 1).padStart(2, "0")}</span>
+              </div>
+              <div class="article-body">
+                <h3 class="article-title">{post.data.title}</h3>
+                <p class="article-meta">
+                  {[post.data.tags.join(" · "), dateFormatter.format(new Date(post.data.publishedAt))]
+                    .filter(Boolean)
+                    .join(" · ")}
+                </p>
+              </div>
+            </a>
+          ))
+        }
+      </div>
+    </section>
+  </main>
+</BaseLayout>
