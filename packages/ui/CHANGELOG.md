@@ -1,5 +1,11 @@
 # @jongh/ui
 
+## 2.20260914.1
+
+### Minor Changes
+
+- Add the `@jongh/ui/tokens.stylex` entry point so StyleX consumers can use the existing design tokens through the UI package's CSS variables. Existing consumers do not need to migrate.
+
 ## 2.20260905.2
 
 ### Minor Changes
