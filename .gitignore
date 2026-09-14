@@ -21,6 +21,8 @@ node_modules
 .yalc/*
 storybook-static
 .next
+**/.astro/
+**/.wrangler/
 out
 # Logs
 logs
